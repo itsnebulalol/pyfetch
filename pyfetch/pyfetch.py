@@ -59,7 +59,7 @@ class PyFetch:
                 kernel = v.read().split(' ')[2]
                 
             with open("/etc/os-release", "r") as o:
-                l = r.readlines()
+                l = o.readlines()
                 for line in l:
                     if line.startswith("PRETTY_NAME"):
                         distro = line.replace("PRETTY_NAME=\"", "").replace("\"", "")
