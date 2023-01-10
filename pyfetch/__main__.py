@@ -1,6 +1,16 @@
 import argparse
 import pyfetch
 
+from pathlib import Path
+from subprocess import getoutput
+from pkg_resources import get_distribution
+
+def get_version() -> str:
+    if Path('.git').exists():
+        return f"{get_distribution(__package__).version}-{getoutput('git rev-parse --abbrev-ref HEAD')}-{getoutput('git rev-parse --short HEAD')}"
+    else:
+        return get_distribution(__package__).version
+
 def main(argv=None, in_package=None) -> None:
     if argv is None:
         in_package = True
@@ -8,10 +18,8 @@ def main(argv=None, in_package=None) -> None:
     in_package = False if in_package is None else in_package
     
     parser = argparse.ArgumentParser()
-    #parser.add_argument('-s', '--semi-tether', action='store_true',
-    #                    help="semi-tether a tethered install")
-    #parser.add_argument('-v', '--version', action='version', version=f'pyfetch v{utils.get_version()}',
-    #                    help='show current version and exit')
+    parser.add_argument('-v', '--version', action='version', version=f'pyfetch v{get_version()}',
+                        help='show current version and exit')
     args = parser.parse_args()
     
     pf = pyfetch.PyFetch(in_package, args)

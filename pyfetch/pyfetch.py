@@ -94,8 +94,8 @@ class PyFetch:
         if self.in_path("dpkg"):
             packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('dpkg -l').splitlines())} dpkg"
             
-        #if self.in_path("brew"):
-        #    packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('brew leaves').splitlines())} brew"
+        if self.in_path("brew"):
+            packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('brew leaves').splitlines())} brew"
         
         if packages == "":
             return "Unknown"
