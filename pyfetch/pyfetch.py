@@ -92,7 +92,9 @@ class PyFetch:
             packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('xbps-query -l').splitlines())} xbps"
         
         if self.in_path("dpkg"):
-            packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('dpkg -l').splitlines())} dpkg"
+            l = len(sp.getoutput('dpkg -l').splitlines())
+            if l != 0:
+                packages += f"{', ' if packages != '' else ''}{l} dpkg"
             
         if self.in_path("brew"):
             packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('brew leaves').splitlines())} brew"
