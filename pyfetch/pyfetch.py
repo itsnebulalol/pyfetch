@@ -62,7 +62,7 @@ class PyFetch:
                 l = o.readlines()
                 for line in l:
                     if line.startswith("PRETTY_NAME"):
-                        distro = line.replace("PRETTY_NAME=\"", "").replace("\"", "")
+                        distro = line.replace("PRETTY_NAME=\"", "").replace("\"", "").replace("\n", "")
                         break
                 
             return f"{distro} (Linux {kernel})"
