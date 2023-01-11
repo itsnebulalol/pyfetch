@@ -3,6 +3,7 @@ import sys
 import psutil
 import subprocess as sp
 
+from platform import machine
 from time import time
 from datetime import datetime
 from argparse import Namespace
@@ -138,17 +139,21 @@ class PyFetch:
         uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
         return str(uptime).split(".")[0]
 
+    def add_item(self, icon: str, name: str, content: str, color: str) -> str:
+        return f"│ {self.colors[color]}{icon} {self.colors['reset']}{name.ljust(9)}│ {self.colors[color]}{content}{self.colors['reset']}\n"
+
     def main(self) -> None:
         out = ""
         out += "╭────────────╮\n"
-        out += f"│ {self.colors['red']} {self.colors['reset']}user     │ {self.colors['red']}{os.environ.get('USER')}{self.colors['reset']}\n"
-        out += f"│ {self.colors['yellow']} {self.colors['reset']}os       │ {self.colors['yellow']}{self.get_os_version()}{self.colors['reset']}\n"
-        out += f"│ {self.colors['green']} {self.colors['reset']}packages │ {self.colors['green']}{self.get_packages()}{self.colors['reset']}\n"
-        out += f"│ {self.colors['cyan']} {self.colors['reset']}shell    │ {self.colors['cyan']}{os.environ.get('SHELL')}{self.colors['reset']}\n"
-        out += f"│ {self.colors['blue']} {self.colors['reset']}memory   │ {self.colors['blue']}{self.get_memory_usage()}{self.colors['reset']}\n"
-        out += f"│ {self.colors['purple']} {self.colors['reset']}uptime   │ {self.colors['purple']}{self.get_uptime()}{self.colors['reset']}\n"
+        out += self.add_item("", "user", os.environ.get('USER'), "red")
+        out += self.add_item("", "os", self.get_os_version(), "yellow")
+        out += self.add_item("", "packages", self.get_packages(), "green")
+        out += self.add_item("", "shell", os.environ.get('SHELL'), "cyan")
+        out += self.add_item("", "memory", self.get_memory_usage(), "blue")
+        out += self.add_item("", "uptime", self.get_uptime(), "purple")
+        out += self.add_item("", "arch", machine(), "red")
         out += "├────────────┤\n"
-        out += f"│  {self.colors['reset']}colors   │ {self.colors['black']}● {self.colors['red']}● {self.colors['green']}● {self.colors['yellow']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●\n"
+        out += self.add_item("", "colors", f"{self.colors['black']}● {self.colors['red']}● {self.colors['green']}● {self.colors['yellow']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●", "reset")
         out += "╰────────────╯"
         
         print(out)
