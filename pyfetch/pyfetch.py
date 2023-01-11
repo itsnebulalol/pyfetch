@@ -3,12 +3,14 @@ import sys
 import psutil
 import subprocess as sp
 
+from .cpuinfo import get_cpu_info
 from platform import machine
 from time import time
 from datetime import datetime
 from argparse import Namespace
 from pathlib import Path
 from shutil import which
+
 
 
 class PyFetch:
@@ -148,12 +150,12 @@ class PyFetch:
         out += self.add_item("", "user", os.environ.get('USER'), "red")
         out += self.add_item("", "os", self.get_os_version(), "yellow")
         out += self.add_item("", "packages", self.get_packages(), "green")
-        out += self.add_item("", "shell", os.environ.get('SHELL'), "cyan")
+        out += self.add_item("", "shell", os.environ.get('SHELL').split("/")[-1], "cyan")
         out += self.add_item("", "memory", self.get_memory_usage(), "blue")
         out += self.add_item("", "uptime", self.get_uptime(), "purple")
-        out += self.add_item("", "arch", machine(), "red")
+        out += self.add_item("", "cpu", f"{get_cpu_info()['brand_raw']} ({machine()})", "red")
         out += "├────────────┤\n"
-        out += self.add_item("", "colors", f"{self.colors['black']}● {self.colors['red']}● {self.colors['green']}● {self.colors['yellow']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●", "reset")
+        out += self.add_item("", "colors", f"{self.colors['black']}● {self.colors['red']}● {self.colors['yellow']}● {self.colors['green']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●", "reset")
         out += "╰────────────╯"
         
         print(out)
