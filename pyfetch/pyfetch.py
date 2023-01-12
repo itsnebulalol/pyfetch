@@ -268,26 +268,22 @@ class PyFetch:
                 return f"{shell_clean} {version}"
         except:
             return shell_clean
-        
 
     def add_item(self, icon: str, name: str, content: str, color: str) -> str:
-        return f"│ {self.colors[color]}{icon} {self.colors['reset']}{name.ljust(9)}│ {self.colors[color]}{content}{self.colors['reset']}\n"
+        return f"│ {self.colors[color]}{icon} {self.colors['reset']}{name.ljust(9)}│ {self.colors[color]}{content}{self.colors['reset']}"
 
     def main(self) -> None:
-        out = ""
-        out += "╭────────────╮\n"
-        out += self.add_item("", "user", os.environ.get('USER'), "red")
-        out += self.add_item("", "model", self.get_model(), "yellow")
-        out += self.add_item("", "os", self.get_os_version(), "green")
-        out += self.add_item("", "cpu", f"{get_cpu_info()['brand_raw']} ({machine()})", "cyan")
-        out += self.add_item("", "gpu", self.get_gpu_info(), "blue")
-        out += self.add_item("", "packages", self.get_packages(), "purple")
-        out += self.add_item("", "shell", self.get_shell(), "red")
-        out += self.add_item("", "memory", self.get_memory_usage(), "yellow")
-        out += self.add_item("", "uptime", self.get_uptime(), "green")
-        out += "├────────────┤\n"
-        out += self.add_item("", "colors", f"{self.colors['black']}● {self.colors['red']}● {self.colors['yellow']}● {self.colors['green']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●", "reset")
-        out += "╰────────────╯"
-        
-        print(out)
+        print("╭────────────╮")
+        print(self.add_item("", "user", os.environ.get('USER'), "red"))
+        print(self.add_item("", "model", self.get_model(), "yellow"))
+        print(self.add_item("", "os", self.get_os_version(), "green"))
+        print(self.add_item("", "cpu", f"{get_cpu_info()['brand_raw']} ({machine()})", "cyan"))
+        print(self.add_item("", "gpu", self.get_gpu_info(), "blue"))
+        print(self.add_item("", "packages", self.get_packages(), "purple"))
+        print(self.add_item("", "shell", self.get_shell(), "lightred"))
+        print(self.add_item("", "memory", self.get_memory_usage(), "yellow"))
+        print(self.add_item("", "uptime", self.get_uptime(), "lightgreen"))
+        print("├────────────┤")
+        print(self.add_item("", "colors", f"{self.colors['black']}● {self.colors['red']}● {self.colors['yellow']}● {self.colors['green']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●", "reset"))
+        print("╰────────────╯")
             
