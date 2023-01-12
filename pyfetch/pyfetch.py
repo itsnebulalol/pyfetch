@@ -11,7 +11,8 @@ from argparse import Namespace
 from pathlib import Path
 from shutil import which
 from re import fullmatch, sub
-
+from requests import get
+from json import loads
 
 
 class PyFetch:
@@ -119,167 +120,25 @@ class PyFetch:
             if sysinfo_model.exists():
                 with open(sysinfo_model, "r") as s:
                     model = s.read()
-                
         elif self.os == "Darwin":
             prod_name = sp.getoutput('sw_vers -productName')
             if prod_name == "iPhone OS":
                 machine_id = sp.getoutput('uname -m')
-                
-                # iPads -- there are too many iPads and I'm not putting them all
-                if machine_id == "iPad1,1":
-                    model = "iPad"
-                elif fullmatch(r"iPad2,[1-4]", machine_id):
-                    model = "iPad 2"
-                elif fullmatch(r"iPad3,[1-3]", machine_id):
-                    model = "iPad 3"
-                elif fullmatch(r"iPad3,[4-6]", machine_id):
-                    model = "iPad 4"
-                elif fullmatch(r"iPad6,1[12]", machine_id):
-                    model = "iPad 5"
-                elif fullmatch(r"iPad7,[5-6]", machine_id):
-                    model = "iPad 6"
-                elif fullmatch(r"iPad7,1[12]", machine_id):
-                    model = "iPad 7"
-                elif fullmatch(r"iPad11,[67]", machine_id):
-                    model = "iPad 8"
-                elif fullmatch(r"iPad4,[1-3]", machine_id):
-                    model = "iPad Air"
-                elif fullmatch(r"iPad5,[3-4]", machine_id):
-                    model = "iPad Air 2"
-                elif fullmatch(r"iPad11,[3-4]", machine_id):
-                    model = "iPad Air 3"
-                elif fullmatch(r"iPad13,[1-2]", machine_id):
-                    model = "iPad Air 4"
-                elif fullmatch(r"iPad6,[7-8]", machine_id):
-                    model = "iPad Pro (12.9 inch)"
-                elif fullmatch(r"iPad6,[3-4]", machine_id):
-                    model = "iPad Pro (9.7 inch)"
-                elif fullmatch(r"iPad7,[1-2]", machine_id):
-                    model = "iPad Pro 2 (12.9 Inch)"
-                elif fullmatch(r"iPad7,[3-4]", machine_id):
-                    model = "iPad Pro (10.5 Inch)"
-                elif fullmatch(r"iPad8,[1-4]", machine_id):
-                    model = "iPad Pro (11 Inch)"
-                elif fullmatch(r"iPad8,[5-8]", machine_id):
-                    model = "iPad Pro 3 (12.9 Inch)"
-                elif fullmatch(r"iPad8,[9-10]", machine_id):
-                    model = "iPad Pro 4 (11 Inch)"
-                elif fullmatch(r"iPad8,1[1-2]", machine_id):
-                    model = "iPad Pro 4 (12.9 Inch)"
-                elif fullmatch(r"iPad2,[5-7]", machine_id):
-                    model = "iPad mini"
-                elif fullmatch(r"iPad4,[4-6]", machine_id):
-                    model = "iPad mini 2"
-                elif fullmatch(r"iPad4,[7-9]", machine_id):
-                    model = "iPad mini 3"
-                elif fullmatch(r"iPad5,[1-2]", machine_id):
-                    model = "iPad mini 4"
-                elif fullmatch(r"iPad11,[1-2]", machine_id):
-                    model = "iPad mini 5"
-                
-                # iPhones
-                elif machine_id == "iPhone1,1":
-                    model = "iPhone"
-                elif machine_id == "iPhone1,2":
-                    model = "iPhone 3G"
-                elif machine_id == "iPhone2,1":
-                    model = "iPhone 3GS"
-                elif fullmatch(r"iPhone3,[1-3]", machine_id):
-                    model = "iPhone 4"
-                elif machine_id == "iPhone4,1":
-                    model = "iPhone 4S"
-                elif fullmatch(r"iPhone5,[1-2]", machine_id):
-                    model = "iPhone 5"
-                elif fullmatch(r"iPhone5,[3-4]", machine_id):
-                    model = "iPhone 5c"
-                elif fullmatch(r"iPhone6,[1-2]", machine_id):
-                    model = "iPhone 5s"
-                elif machine_id == "iPhone7,2":
-                    model = "iPhone 6"
-                elif machine_id == "iPhone7,1":
-                    model = "iPhone 6 Plus"
-                elif machine_id == "iPhone8,1":
-                    model = "iPhone 6s"
-                elif machine_id == "iPhone8,2":
-                    model = "iPhone 6s Plus"
-                elif machine_id == "iPhone8,4":
-                    model = "iPhone SE (1st generation)"
-                elif fullmatch(r"iPhone9,[13]", machine_id):
-                    model = "iPhone 7"
-                elif fullmatch(r"iPhone9,[24]", machine_id):
-                    model = "iPhone 7 Plus"
-                elif fullmatch(r"iPhone10,[14]", machine_id):
-                    model = "iPhone 8"
-                elif fullmatch(r"iPhone10,[25]", machine_id):
-                    model = "iPhone 8 Plus"
-                elif fullmatch(r"iPhone10,[36]", machine_id):
-                    model = "iPhone X"
-                elif machine_id == "iPhone11,2":
-                    model = "iPhone XS"
-                elif fullmatch(r"iPhone11,[46]", machine_id):
-                    model = "iPhone XS Max"
-                elif machine_id == "iPhone11,8":
-                    model = "iPhone XR"
-                elif machine_id == "iPhone12,1":
-                    model = "iPhone 11"
-                elif machine_id == "iPhone12,3":
-                    model = "iPhone 11 Pro"
-                elif machine_id == "iPhone12,5":
-                    model = "iPhone 11 Pro Max"
-                elif machine_id == "iPhone12,8":
-                    model = "iPhone SE (2nd generation)"
-                elif machine_id == "iPhone13,1":
-                    model = "iPhone 12 mini"
-                elif machine_id == "iPhone13,2":
-                    model = "iPhone 12"
-                elif machine_id == "iPhone13,3":
-                    model = "iPhone 12 Pro"
-                elif machine_id == "iPhone13,4":
-                    model = "iPhone 12 Pro Max"
-                elif machine_id == "iPhone14,4":
-                    model = "iPhone 13 mini"
-                elif machine_id == "iPhone14,5":
-                    model = "iPhone 13"
-                elif machine_id == "iPhone14,2":
-                    model = "iPhone 13 Pro"
-                elif machine_id == "iPhone14,3":
-                    model = "iPhone 13 Pro Max"
-                elif machine_id == "iPhone14,6":
-                    model = "iPhone SE (3rd generation)"
-                elif machine_id == "iPhone14,7":
-                    model = "iPhone 14"
-                elif machine_id == "iPhone14,8":
-                    model = "iPhone 14 Plus"
-                elif machine_id == "iPhone15,2":
-                    model = "iPhone 14 Pro"
-                elif machine_id == "iPhone15,3":
-                    model = "iPhone 14 Pro Max"
-
-                # iPods
-                elif machine_id == "iPod1,1":
-                    model = "iPod touch"
-                elif machine_id == "iPod2,1":
-                    model = "iPod touch 2G"
-                elif machine_id == "iPod3,1":
-                    model = "iPod touch 3G"
-                elif machine_id == "iPod4,1":
-                    model = "iPod touch 4G"
-                elif machine_id == "iPod5,1":
-                    model = "iPod touch 5G"
-                elif machine_id == "iPod7,1":
-                    model = "iPod touch 6G"
-                elif machine_id == "iPod9,1":
-                    model = "iPod touch 7G"
-                
-                # if it's not listed here
-                else:
-                    model = machine_id
             else:
-                model = sp.getoutput('sysctl -n hw.model')
+                machine_id = sp.getoutput('sysctl -n hw.model')
                 kexts = sp.getoutput("kextstat")
                 
-                if "FakeSMC" in kexts or "VirtualSMC" in kexts:
-                    model = f"{model} (Hackintosh)"
+                is_hackintosh = True if "FakeSMC" in kexts or "VirtualSMC" in kexts else False
+            
+            res = get(f"https://di-api.reincubate.com/v1/apple-identifiers/{machine_id}/")
+
+            if res.status_code != 200:
+                return machine_id
+
+            j = loads(res.content)
+            model = f"{j['product']['sku']}"
+            if is_hackintosh:
+                model = f"{model} (Hackintosh)"
         
         for info in oem_info:
             model = sub(info, "", model)
