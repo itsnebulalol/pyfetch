@@ -248,6 +248,28 @@ class PyFetch:
         except:
             return "Unknown"
 
+    def get_shell(self) -> str:
+        shell = os.environ.get('SHELL')
+        shell_clean = shell.split("/")[-1]
+        
+        try:
+            if not shell_clean in ("sh", "ash", "dash", "es"):
+                if shell_clean == "bash":
+                    bash_version = sp.getoutput(f"{shell} --version")
+                    version = bash_version.splitlines()[0].split("version ")[1].split(" (")[0]
+                elif shell_clean == "zsh":
+                    version = sp.getoutput(f"{shell} --version").split(" (")[0]
+                else:
+                    version = sp.getoutput(f"{shell} --version")
+            
+            if shell_clean in version:
+                return version
+            else:
+                return f"{shell_clean} {version}"
+        except:
+            return shell_clean
+        
+
     def add_item(self, icon: str, name: str, content: str, color: str) -> str:
         return f"│ {self.colors[color]}{icon} {self.colors['reset']}{name.ljust(9)}│ {self.colors[color]}{content}{self.colors['reset']}\n"
 
@@ -260,7 +282,7 @@ class PyFetch:
         out += self.add_item("", "cpu", f"{get_cpu_info()['brand_raw']} ({machine()})", "cyan")
         out += self.add_item("", "gpu", self.get_gpu_info(), "blue")
         out += self.add_item("", "packages", self.get_packages(), "purple")
-        out += self.add_item("", "shell", os.environ.get('SHELL').split("/")[-1], "red")
+        out += self.add_item("", "shell", self.get_shell(), "red")
         out += self.add_item("", "memory", self.get_memory_usage(), "yellow")
         out += self.add_item("", "uptime", self.get_uptime(), "green")
         out += "├────────────┤\n"
