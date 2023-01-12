@@ -237,13 +237,21 @@ class PyFetch:
             lscpi = sp.getoutput("lscpi")
             l = lscpi.splitlines()
             for line in l:
+                print("Display" in line)
+                print("3D" in line)
+                print("VGA" in line)
+                print("Display" in line or "3D" in line or "VGA" in line)
                 if "Display" in line or "3D" in line or "VGA" in line:
+                    print(line)
                     gpu = line.split(": ")[1].split(" (rev")[0]
         
-        if "Intel" in gpu:
-            gpu = gpu.replace("Corporation ", "")
-        
-        return gpu
+        try:
+            if "Intel" in gpu:
+                gpu = gpu.replace("Corporation ", "")
+            
+            return gpu
+        except:
+            return "Unknown"
 
     def add_item(self, icon: str, name: str, content: str, color: str) -> str:
         return f"│ {self.colors[color]}{icon} {self.colors['reset']}{name.ljust(9)}│ {self.colors[color]}{content}{self.colors['reset']}\n"
