@@ -149,7 +149,7 @@ class PyFetch:
         if model == "":
             model = "Unknown"
         
-        return model
+        return model.strip()
     
     def in_path(self, cmd) -> bool:
         return which(cmd) is not None
