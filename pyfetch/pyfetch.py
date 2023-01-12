@@ -234,15 +234,10 @@ class PyFetch:
                     if "Chipset Model:" in line:
                         gpu = line.split("Chipset Model: ")[1]
         else:
-            lscpi = sp.getoutput("lscpi")
-            l = lscpi.splitlines()
+            lspci = sp.getoutput("lspci")
+            l = lspci.splitlines()
             for line in l:
-                print("Display" in line)
-                print("3D" in line)
-                print("VGA" in line)
-                print("Display" in line or "3D" in line or "VGA" in line)
                 if "Display" in line or "3D" in line or "VGA" in line:
-                    print(line)
                     gpu = line.split(": ")[1].split(" (rev")[0]
         
         try:
