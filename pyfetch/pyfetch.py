@@ -222,6 +222,29 @@ class PyFetch:
         uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
         return str(uptime).split(".")[0]
 
+    def get_gpu_info(self) -> str:
+        if self.os == "Darwin":
+            prod_name = sp.getoutput('sw_vers -productName')
+            if prod_name == "iPhone OS":
+                pass
+            else:
+                gpu_info = sp.getoutput("system_profiler SPDisplaysDataType")
+                l = gpu_info.splitlines()
+                for line in l:
+                    if "Chipset Model:" in line:
+                        gpu = line.split("Chipset Model: ")[1]
+        else:
+            lscpi = sp.getoutput("lscpi")
+            l = lscpi.splitlines()
+            for line in l:
+                if "Display" in line or "3D" in line or "VGA" in line:
+                    gpu = line.split(": ")[1].split(" (rev")[0]
+        
+        if "Intel" in gpu:
+            gpu = gpu.replace("Corporation ", "")
+        
+        return gpu
+
     def add_item(self, icon: str, name: str, content: str, color: str) -> str:
         return f"│ {self.colors[color]}{icon} {self.colors['reset']}{name.ljust(9)}│ {self.colors[color]}{content}{self.colors['reset']}\n"
 
@@ -232,10 +255,11 @@ class PyFetch:
         out += self.add_item("", "model", self.get_model(), "yellow")
         out += self.add_item("", "os", self.get_os_version(), "green")
         out += self.add_item("", "cpu", f"{get_cpu_info()['brand_raw']} ({machine()})", "cyan")
-        out += self.add_item("", "packages", self.get_packages(), "blue")
-        out += self.add_item("", "shell", os.environ.get('SHELL').split("/")[-1], "purple")
-        out += self.add_item("", "memory", self.get_memory_usage(), "red")
-        out += self.add_item("", "uptime", self.get_uptime(), "yellow")
+        out += self.add_item("", "gpu", self.get_gpu_info(), "blue")
+        out += self.add_item("", "packages", self.get_packages(), "purple")
+        out += self.add_item("", "shell", os.environ.get('SHELL').split("/")[-1], "red")
+        out += self.add_item("", "memory", self.get_memory_usage(), "yellow")
+        out += self.add_item("", "uptime", self.get_uptime(), "green")
         out += "├────────────┤\n"
         out += self.add_item("", "colors", f"{self.colors['black']}● {self.colors['red']}● {self.colors['yellow']}● {self.colors['green']}● {self.colors['cyan']}● {self.colors['blue']}● {self.colors['purple']}● {self.colors['reset']}●", "reset")
         out += "╰────────────╯"
