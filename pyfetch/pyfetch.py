@@ -144,7 +144,7 @@ class PyFetch:
             model = sub(info, "", model)
         
         if "Standard PC" in model:
-            model = f"{model} (KVM)"
+            model = f"{model.strip()} (KVM)"
             
         if model == "":
             model = "Unknown"
@@ -177,8 +177,9 @@ class PyFetch:
             if l != 0:
                 packages += f"{', ' if packages != '' else ''}{l} dpkg"
             
-        if self.in_path("brew"):
-            packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('brew leaves').splitlines())} brew"
+        if not self.args.skip_long_commands:
+            if self.in_path("brew"):
+                packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('brew leaves').splitlines())} brew"
             
         if self.in_path("port"):
             packages += f"{', ' if packages != '' else ''}{len(sp.getoutput('port installed').splitlines())} port"

@@ -20,6 +20,8 @@ def main(argv=None, in_package=None) -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--version', action='version', version=f'pyfetch v{get_version()}',
                         help='show current version and exit')
+    parser.add_argument('-l', '--skip-long-commands', action='store_true',
+                        help='skips commands that take awhile, removes functionality')
     args = parser.parse_args()
     
     pf = pyfetch.PyFetch(in_package, args)
